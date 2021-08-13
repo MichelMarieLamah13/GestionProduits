@@ -1,0 +1,253 @@
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header">
+            <h5>Edit Product</h5>
+          </div>
+          <div class="card-body">
+            <div class="row product-adding">
+              <div class="col-xl-5">
+                <div class="add-product">
+                  <div class="row">
+                    <div class="col-xl-9 xl-50 col-sm-6 col-9">
+                      <img src="assets/images/pro3/1.jpg" alt="" class="img-fluid image_zoom_1">
+                    </div>
+                    <div class="col-xl-3 xl-50 col-sm-6 col-3">
+                      <ul class="file-upload-product">
+                        <li *ngFor="let item of url; let i=index">
+                          <div class="box-input-file">
+                            <input class="upload" type="file" (change)="readUrl($event,i)">
+                            <img class="imgUpload" alt="" [src]="item.img"
+                              style="border-radius:100%; height:48px; width:48px;">
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-7">
+                <form class="needs-validation" *ngIf="productForm" [formGroup]="productForm" novalidate>
+                  <div class="add-product-form">
+                    <div class="form-group row">
+                      <label for="refProduit" class="col-xl-3 col-sm-4 mb-0">Réference:</label>
+                      <input class="form-control col-xl-8 col-sm-7" id="refProduit" type="text"
+                        formControlName="refProduit" required>
+                      <div *ngIf="refProduit.invalid && (refProduit.touched || refProduit.dirty)"
+                        class="text text-danger">
+                        <div *ngIf="refProduit.errors?.required">
+                          The refProduit is required.
+                        </div>
+                        <div *ngIf="refProduit.errors?.pattern">
+                          The refProduit must be a string with at least 4 characters.
+                        </div>
+                      </div>
+  
+                    </div>
+                    <div class="form-group row">
+                      <label for="designation" class="col-xl-3 col-sm-4 mb-0">Designation :</label>
+                      <input class="form-control col-xl-8 col-sm-7" id="designation" type="text"
+                        formControlName="designation" required>
+                      <div *ngIf="designation.invalid && (designation.touched || designation.dirty)"
+                        class="text text-danger">
+                        <div *ngIf="designation.errors?.required">
+                          The designation is required.
+                        </div>
+                        <div *ngIf="designation.errors?.pattern">
+                          The designation must be a string with at least 4 characters.
+                        </div>
+                      </div>
+  
+                    </div>
+                    <div class="form-group row">
+                      <label for="tarifUHT" class="col-xl-3 col-sm-4 mb-0">Tarif UHT :</label>
+                      <input class="form-control col-xl-8 col-sm-7" id="tarifUHT" type="number" formControlName="tarifUHT"
+                        required="">
+                      <div *ngIf="tarifUHT.invalid && (tarifUHT.touched || tarifUHT.dirty)" class="text text-danger">
+                        <div *ngIf="tarifUHT.errors?.required">
+                          The tarifUHT is required.
+                        </div>
+                        <div *ngIf="tarifUHT.errors?.pattern">
+                          The tarifUHT must be a number.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label for="pays" class="col-xl-3 col-sm-4 mb-0">Product Pays:</label>
+                      <!--<select class="form-control digits col-xl-8 col-sm-7" id="pays" formControlName="pays">
+                        <option value="null" selected disabled>Select Pays</option>
+                        <option *ngFor="let country of countries" [ngValue]="country">{{country}}</option>
+                      </select>-->
+                      <ng-multiselect-dropdown class="col-xl-8 col-sm-7 m-0 p-0" name="pays"
+                        [placeholder]="'-- Select Pays --'" [settings]="dropdownPaysSettings" formControlName="pays"
+                        [data]="listPays" (onSelect)="onPaysSelect($event)" (onDeSelect)="onPaysDeSelect($event)">
+                        <ng-template #optionsTemplate let-item let-option="option" let-id="id"
+                          let-isSelected="isSelected">
+                          <div style="padding:1px 10px;margin-right:10px;right:2px;top:-2px">
+                            <img [src]="getPays[id].image" style="width: 18px; margin: 0 20px;" />
+                            <label style="color: #333;min-width: 130px;"
+                              [ngStyle]="{ 'color': getPays[id].isDisabled? 'lightgrey':''}">
+                              {{getPays[id].item_text}}
+                            </label>
+                          </div>
+                        </ng-template>
+                        <ng-template #optionSelectedTemplate let-option="option" let-id="id">
+                          <div>
+                            <img [src]="getPays[id].image" style="width: 18px; margin-right: 2px;" />
+                            {{option}}
+                          </div>
+                        </ng-template>
+                      </ng-multiselect-dropdown>
+                      <div *ngIf="pays.invalid && pays.touched" class="text text-danger">
+                        <div *ngIf="pays.errors?.required">
+                          The pays is required.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label for="typePS" class="col-xl-3 col-sm-4 mb-0">Select Type:</label>
+                      <!--<select class="form-control digits col-xl-8 col-sm-7" id="typePS" formControlName="typePS">
+                        <option value="null" selected disabled>Select Type</option>
+                        <option *ngFor="let type of types" [ngValue]="type">{{type}}</option>
+                      </select>-->
+                      <ng-multiselect-dropdown class="col-xl-8 col-sm-7 m-0 p-0" id="typePS" name="typePS" [data]="listTypes"
+                        formControlName="typePS" [settings]="dropdownTypesSettings"
+                        (onSelect)="onTypeSelect($event)" (onDeSelect)="onTypeDeSelect($event)"
+                        [placeholder]="'-- Select Type --'">
+                      </ng-multiselect-dropdown>
+                      <div *ngIf="typePS.invalid && typePS.touched" class="text text-danger">
+  
+                        <div *ngIf="typePS.errors?.required">
+                          The TypePS is required.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-xl-3 col-sm-4 mb-0">Qte Min :</label>
+                      <div class="qty-box1">
+                        <div class="input-group">
+                          <i class="fa fa-minus btnGtr1" (click)="decrement('min')"></i>
+                          <input class="touchspin1 text-center" name="minCom" [value]="minCom" type="text"
+                            formControlName="minCommande">
+                          <i class="fa fa-plus btnLess1" (click)="increment('min')"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-xl-3 col-sm-4 mb-0">Qte Max :</label>
+                      <div class="qty-box1">
+                        <div class="input-group">
+                          <i class="fa fa-minus btnGtr1" (click)="decrement('max')"></i>
+                          <input class="touchspin1 text-center" name="maxCom" [value]="maxCom" type="text"
+                            formControlName="maxCommande">
+                          <i class="fa fa-plus btnLess1" (click)="increment('max')"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-xl-3 col-sm-4">Add Description :</label>
+                      <div class="col-xl-8 col-sm-7 pl-0 description-sm">
+                        <!--<ck-editor id="editor1" language="en" [fullPage]="false" [formControlName]="descriptif"></ck-editor>-->
+                        <textarea class="form-control" name="descriptif" id="" cols="30" rows="10"
+                          formControlName="descriptif"></textarea>
+  
+                      </div>
+                    </div>
+                  </div>
+                </form>
+                <div class="form-group row mb-0">
+                  <div class="product-buttons col-sm-8 offset-xl-3 offset-sm-4">
+                    <button type="button" class="btn btn-primary mr-1" (click)="editProduit()">Edit</button>
+                    <button type="button" class="btn btn-light" (click)="resetForm()">Discard</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h5>Tarifs Saisonniers du produit</h5>
+          </div>
+          <div class="card-body">
+            <div class="custom-datatable">
+                <button class="btn btn-primary mr-1 mb-3" style="float: right;" (click)="addTarifSaisonnier()">Add</button>
+                <div class="clearfix"></div>
+                <div class="table-responsive">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col" *ngFor="let header of tsHeaders">{{header}}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let ts of listTarifSaisonniers">
+                        <td>{{ts.labelTarif}}</td>
+                        <td>{{ts.saison}}</td>
+                        <td>{{ts.couleurSaison}}</td>
+                        <td>{{ts.monnaie}}</td>
+                        <td>{{ts.tarifUHT}}</td>
+                        <td><a (click)="onClickShow(ts._id)" href="javascript:;" class="text text-info"><i
+                              class="fa fa-eye"></i></a>&nbsp;
+                          |&nbsp;
+                          <a (click)="onClickEdit(ts._id)" href="javascript:;" class="text text-warning"><i
+                              class="fa fa-edit"></i></a>&nbsp;
+                          |&nbsp;
+                          <a (click)="setTarifSaisonnierToDelete(ts._id)" (click)="open(deleteModal)" href="javascript:;"
+                            class="text text-danger"><i class="fa fa-trash"></i></a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <ng-template #deleteModal let-modal>
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title f-w-600" id="myModal_delete_produit">Supprimer de la liste des tarifs du produit</h5>
+            </div>
+            <div class="modal-body">
+              <div class="container" style="padding: 20px 20px;">
+                <div style="text-align: center;margin-bottom: 15px;  ">
+                  <i class="fa fa-exclamation-triangle fa-5x" style="text-align: center; color: red;"
+                    aria-hidden="true"></i>
+                </div>
+              </div>
+              <div style="margin-bottom: 20px;">
+                <h4 style="text-align: center;">
+                  Êtes-vous sûr?
+                </h4>
+              </div>
+              <div style="text-align: center; color: whitesmoke; margin-bottom: 20px;">
+                <p style="line-height:15px;">
+                  Voulez-vous vraiment supprimer ces enregistrements? Ce processus ne peut pas être
+                  annulé.</p>
+              </div>
+  
+            </div>
+            <div class="modal-footer" style="text-align: center;">
+              <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')" href="javascript:;"
+                data-dismiss="modal">
+  
+                Annuler
+              </button>
+              &nbsp;
+              <button type="button" class="btn btn-primary" href="javascript:;" (click)="onClickDelete()"
+                (click)="modal.dismiss('Cross click')">
+                Supprimer
+              </button>
+  
+            </div>
+          </div>
+  
+        </ng-template>
+      </div>
+    </div>
+  </div>
+  <!-- Container-fluid Ends-->

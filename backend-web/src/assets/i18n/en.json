@@ -1,0 +1,23 @@
+{
+	"footer": {
+		"copyright": "Copyright",
+		"hello": "Hello",
+		"madeBy": "Hand crafted by SAT & made with",
+		"rights": "SAT All rights reserved"
+	},
+	"sidebar": {
+		"coupons": "Coupons",
+		"dashboard": "Dashboard",
+		"invoice": "Invoice",
+		"localization": "Localization",
+		"login": "Login",
+		"media": "Media",
+		"menus": "Menus",
+		"pages": "Pages",
+		"products": "Products",
+		"reports": "Reports",
+		"sales": "Sales",
+		"settings": "Settings",
+		"vendors": "Vendors"
+	}
+}
