@@ -22,7 +22,7 @@ export class DetailsTarifSaisonnierComponent implements OnInit {
     concernDistrs: [],
     appToAllZones: '',
     concernZones: [],
-    produitService:0
+    produitService:''
   };
   // Dropdown saison
   saisons: Array<String> = [];
@@ -228,5 +228,6 @@ export class DetailsTarifSaisonnierComponent implements OnInit {
     const url = ["/tarif-saisonnier/simple/list-tarif-saisonnier"]
     this.router.navigate(url)
   }
+  
 
 }

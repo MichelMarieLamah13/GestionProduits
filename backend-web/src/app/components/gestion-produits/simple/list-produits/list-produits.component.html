@@ -19,8 +19,12 @@
                 <tbody>
                   <tr *ngFor="let produit of listProducts">
                     <th scope="row">{{produit.refProduit}}</th>
-                    <td><img [lazyLoad]="url+produit?.imgPD[0]" [defaultImage]="'assets/images/user.png'"
-                        style="border-radius:100%; height:48px; width:48px;"></td>
+                    <td>
+                      <img *ngIf="produit?.imgPD[0]" [lazyLoad]="url+produit?.imgPD[0]" [defaultImage]="'assets/images/user.png'"
+                        style="border-radius:100%; height:48px; width:48px;">
+                      <img *ngIf="!produit?.imgPD[0]" [lazyLoad]="" [defaultImage]="'assets/images/user.png'"
+                        style="border-radius:100%; height:48px; width:48px;">
+                    </td>
                     <td>{{produit.typePS}}</td>
                     <td>{{produit.designation}}</td>
                     <td>{{produit.pays}}</td>

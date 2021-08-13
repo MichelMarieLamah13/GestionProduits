@@ -195,29 +195,23 @@ export class AddTarifSaisonnierComponent implements OnInit {
 
   // Dropdown saisons
   onSaisonSelect(item: any) {
-    console.log('Selected saison from event:', item);
   }
 
   onSaisonDeSelect(item: any) {
-    console.log('Deselected saison from event:', item);
   }
 
   // Dropdown couleur saisons
   onCouleurSaisonSelect(item: any) {
-    console.log('Selected couleur saison from event:', item);
   }
 
   onCouleurSaisonDeSelect(item: any) {
-    console.log('Deselected couleur saison from event:', item);
   }
 
   // Dropdown monnaies
   onMonnaieSelect(item: any) {
-    console.log('Selected monnaie from event:', item);
   }
 
   onMonnaieDeSelect(item: any) {
-    console.log('DeSelected monnaie from event:', item);
   }
 
   get getMonnaies() {
@@ -229,36 +223,28 @@ export class AddTarifSaisonnierComponent implements OnInit {
 
   // Dropdown distributeurs
   onDistributeurSelect(item: any) {
-    console.log('Selected distributeur from event:', item);
   }
 
   onDistributeurDeSelect(item: any) {
-    console.log('Deselected distributeur from event:', item);
   }
 
   onSelectAllDistributeurs(items: any) {
-    console.log('Selected distributeurs from event:', items);
   }
 
   onDeSelectAllDistributeurs(items: any) {
-    console.log('Deselected distributeurs from event:', items);
   }
 
   // Dropdown zones
   onZoneSelect(item: any) {
-    console.log('Selected zone from event:', item);
   }
 
   onZoneDeSelect(item: any) {
-    console.log('DeSelected zone from event:', item);
   }
 
   onSelectAllZones(items: any) {
-    console.log('Selected zones from event:', items);
   }
 
   onDeSelectAllZones(items: any) {
-    console.log('Deselected zones from event:', items);
   }
 
   get getZones() {
@@ -290,7 +276,7 @@ export class AddTarifSaisonnierComponent implements OnInit {
             },
             (error) => {
               console.log({ error: error });
-              this.toastr.error("Le Tarif saisonnier été ajouté avec succès", "🥵", {
+              this.toastr.error("Le Tarif saisonnier n'a pas été ajouté", "🥵", {
                 timeOut: 2000,
                 progressBar: true,
                 progressAnimation: 'increasing',

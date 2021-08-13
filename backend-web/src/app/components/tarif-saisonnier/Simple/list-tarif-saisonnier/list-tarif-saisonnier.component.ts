@@ -70,20 +70,23 @@ export class ListTarifSaisonnierComponent implements OnInit {
   onClickDelete() {
     this.tarifSaisonnierService.deleteTarifSaisonnierById(this.tsToDelete).subscribe(
       (success) => {
-        this.produitService.deleteTarifSaisonnierFromList(success.produitService,success._id).subscribe(
-          (success)=>{
-            this.toastr.success('Le tarif saisonnier a été supprimé avec succès', '😄', {
-              timeOut: 2000,
-              progressBar: true,
-              progressAnimation: 'increasing',
-              positionClass: 'toast-top-right'
+        if (success.produitService){
+          this.produitService.deleteTarifSaisonnierFromList(success.produitService,success._id).subscribe(
+            (success)=>{
+            },
+            (error)=>{
+              console.log(error);
+            }
+          );
+        }
+        this.toastr.success('Le tarif saisonnier a été supprimé avec succès', '😄', {
+          timeOut: 2000,
+          progressBar: true,
+          progressAnimation: 'increasing',
+          positionClass: 'toast-top-right'
 
-            });
-          },
-          (error)=>{
-            console.log(error);
-          }
-        );
+        });
+       
         this.getAllTarifSaisonniers()
       },
       (error) => {

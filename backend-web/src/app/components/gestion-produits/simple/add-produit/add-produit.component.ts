@@ -242,11 +242,9 @@ export class AddProduitComponent implements OnInit {
 
   // Dropdown pays
   onPaysSelect(item: any) {
-    console.log('Selected zone from event:', item);
   }
 
   onPaysDeSelect(item: any) {
-    console.log('DeSelected zone from event:', item);
   }
 
   get getPays() {
@@ -258,10 +256,8 @@ export class AddProduitComponent implements OnInit {
 
   // Dropdown couleur saisons
   onTypeSelect(item: any) {
-    console.log('Selected type from event:', item);
   }
 
   onTypeDeSelect(item: any) {
-    console.log('Deselected type from event:', item);
   }
 }

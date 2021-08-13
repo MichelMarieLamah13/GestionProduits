@@ -19,6 +19,10 @@ export class TarifSaisonnierService {
     return this.httpClient.post<TarifSaisonnier>(environment.apiEndPoint+'tarifSaisonniers', tarifSaisonnier);
   }
 
+  editTarifSaisonnier(tarifSaisonnier: TarifSaisonnier){
+    return this.httpClient.patch<TarifSaisonnier>(environment.apiEndPoint+`tarifSaisonniers/${tarifSaisonnier._id}`, tarifSaisonnier);
+  }
+
   findTarifSaisonnierById(id: string):Observable<TarifSaisonnier>{
     return this.httpClient.get<TarifSaisonnier>(environment.apiEndPoint+`tarifSaisonniers/${id}`);
   }
@@ -28,6 +32,6 @@ export class TarifSaisonnierService {
   }
 
   removeTarifSaisonnierProduct(id: string){
-    return this.httpClient.patch(environment.apiEndPoint+`tarifSaisonniers/${id}`,{produitService:''})
+    return this.httpClient.patch(environment.apiEndPoint+`tarifSaisonniers/${id}`,{produitService:null})
   }
 }

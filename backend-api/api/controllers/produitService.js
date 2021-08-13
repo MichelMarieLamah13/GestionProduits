@@ -126,7 +126,7 @@ exports.delete_tarifSaisonnier_from_list = (req, res, next) => {
         if (error) {
             console.log(error);
         } else {
-            if (doc.tarifSaisonnier.includes(req.body.tsId)) {
+            if (doc && doc.tarifSaisonnier.includes(req.body.tsId)) {
                 doc.updateOne({ $pull: { tarifSaisonnier: req.body.tsId } }, (error, doc) => {
                     if (error) {
                         console.log(error);
