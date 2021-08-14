@@ -4,6 +4,8 @@ import { ProduitSimple } from 'src/app/shared/model/produit-simple/produit-simpl
 import { ProduitSimpleService } from 'src/app/shared/service/produit-simple/produit-simple.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { allowedRefProduitValidator } from 'src/app/shared/directives/allowed-ref-produit.directive';
+import { lessThanValidator } from 'src/app/shared/directives/less-than.directive';
 
 
 @Component({
@@ -50,15 +52,15 @@ export class AddProduitComponent implements OnInit {
   constructor(private fb: FormBuilder, private psService: ProduitSimpleService,
     private toastr: ToastrService, private router: Router) {
     this.productForm = this.fb.group({
-      refProduit: ['', [Validators.required, Validators.pattern('^[A-Za-z0-9_@ ]{4,}$')]],
+      refProduit: ['', [Validators.required, Validators.pattern('^[A-Za-z0-9_@ ]{4,}$'), allowedRefProduitValidator(/^SAT@27[0-9]{2,}$/)]],
       designation: ['', [Validators.required, Validators.pattern('^[A-Za-z0-9_@ ]{4,}$')]],
       descriptif: ['', [Validators.required, Validators.minLength(4)]],
       typePS: [null, [Validators.required]],
       tarifUHT: ['', [Validators.required, Validators.pattern('[0-9]+$')]],
-      minCommande: [1, [Validators.required, Validators.pattern('[0-9]+$')]],
-      maxCommande: [1, [Validators.required, Validators.pattern('[0-9]+$')]],
+      minCommande: [1, [Validators.required, Validators.pattern('^[1-9][0-9]*$')]],
+      maxCommande: [2, [Validators.required, Validators.pattern('^[1-9][0-9]*$')]],
       pays: [null, [Validators.required]],
-    })
+    },{validators: lessThanValidator})
     this.produitSimple = new ProduitSimple();
     // Dropdown pays
     this.listPays = [

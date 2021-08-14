@@ -17,6 +17,8 @@ import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.componen
 import { RightSidebarComponent } from './components/right-sidebar/right-sidebar.component';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { AllowedRefProduitDirective } from './directives/allowed-ref-produit.directive';
+import { LessThanDirective } from './directives/less-than.directive';
 
 
 
@@ -29,7 +31,9 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     SidebarComponent,
     ContentLayoutComponent,
     BreadcrumbComponent,
-    RightSidebarComponent
+    RightSidebarComponent,
+    AllowedRefProduitDirective,
+    LessThanDirective
    
   ],
   imports: [
@@ -41,6 +45,7 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
   ],
   providers: [NavService, WINDOW_PROVIDERS],
-  exports: [FeatherIconsComponent, ToggleFullscreenDirective, LazyLoadImageModule, NgMultiSelectDropDownModule]
+  exports: [FeatherIconsComponent, ToggleFullscreenDirective, LazyLoadImageModule,
+    AllowedRefProduitDirective, NgMultiSelectDropDownModule, LessThanDirective]
 })
 export class SharedModule { }

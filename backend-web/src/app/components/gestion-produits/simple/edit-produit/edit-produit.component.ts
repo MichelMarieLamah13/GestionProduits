@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { ProduitSimple } from 'src/app/shared/model/produit-simple/produit-simple.model';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, NgForm } from '@angular/forms';
 import { ProduitSimpleService } from 'src/app/shared/service/produit-simple/produit-simple.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
@@ -11,19 +11,29 @@ import { TarifSaisonnier } from 'src/app/shared/model/produit-simple/tarif-saiso
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 
+
+
 @Component({
   selector: 'app-edit-produit',
   templateUrl: './edit-produit.component.html',
   styleUrls: ['./edit-produit.component.scss']
 })
+
 export class EditProduitComponent implements OnInit {
   public selectedProduct: ProduitSimple;
+  public selectedPd = {
+    refProduit: '',
+    designation: '',
+    descriptif: '',
+    typePS: [],
+    tarifUHT: 0,
+    minCommande: 0,
+    maxCommande: 0,
+    pays: []
+  }
   public listTarifSaisonniers: Array<any>;
   public closeResult: string;
   public tsHeaders: Array<string>;
-  public productForm: FormGroup;
-  public maxCom: number = 1;
-  public minCom: number = 1;
   public productImgs = [null, null, null, null, null];
   public url = [{
     img: "assets/images/user.png",
@@ -43,16 +53,17 @@ export class EditProduitComponent implements OnInit {
   ]
 
   // Dropdown pays
+
   disabledDropdownPays = false;
   showFilterPays = false;
   limitSelectionPays = false;
-  listPays: Array<any> = [];
-  selectedPays: Array<any> = [];
+  listPays: Array<DdPays>;
+  selectedPays: Array<DdPays>;
   dropdownPaysSettings: any = {};
 
   // Dropdown types
-  listTypes: Array<String> = [];
-  selectedType: Array<String> = [];
+  listTypes: Array<string> = [];
+  selectedType: Array<string> = [];
   dropdownTypesSettings: any = {};
   closeDropdownTypesSelection = false;
   disabledDropdownTypes = false;
@@ -60,9 +71,8 @@ export class EditProduitComponent implements OnInit {
 
 
   constructor(private modalService: NgbModal, private fb: FormBuilder, private activatedRoute: ActivatedRoute, private produitService: ProduitSimpleService, private toastr: ToastrService, private router: Router) {
-    
-    this.tsHeaders = ['Label', 'Saison', 'Couleur', 'Monnaie', 'Tarif UHT', 'Actions'];
 
+    this.tsHeaders = ['Label', 'Saison', 'Couleur', 'Monnaie', 'Tarif UHT', 'Actions'];
     // Dropdown pays
     this.listPays = [
       {
@@ -116,25 +126,7 @@ export class EditProduitComponent implements OnInit {
         this.produitService.findProductById(success.id).subscribe(
           (success) => {
             this.selectedProduct = success;
-            this.listTarifSaisonniers = this.selectedProduct.tarifSaisonnier;
-            this.selectedPays = this.listPays.filter(p => p.item_text === this.selectedProduct.pays);
-            this.selectedType = this.listTypes.filter(p => p === this.selectedProduct.typePS);
-            // form
-
-            this.productForm = this.fb.group({
-              refProduit: [this.selectedProduct.refProduit, [Validators.required, Validators.pattern('^[A-Za-z0-9_@ ]{4,}$')]],
-              designation: [this.selectedProduct.designation, [Validators.required, Validators.pattern('^[A-Za-z0-9_@ ]{4,}$')]],
-              descriptif: [this.selectedProduct.descriptif, [Validators.required, Validators.minLength(4)]],
-              typePS: [this.selectedType, [Validators.required]],
-              tarifUHT: [this.selectedProduct.tarifUHT, [Validators.required, Validators.pattern('[0-9]+$')]],
-              minCommande: [this.selectedProduct.minCommande, [Validators.required, Validators.pattern('[0-9]+$')]],
-              maxCommande: [this.selectedProduct.maxCommande, [Validators.required, Validators.pattern('[0-9]+$')]],
-              pays: [this.selectedPays, [Validators.required]],
-            })
-
-            // Image
-            this.getImages();
-
+            this.resetAllValues();
           },
           (error) => {
             console.log(error);
@@ -162,6 +154,21 @@ export class EditProduitComponent implements OnInit {
       }
     }
   }
+
+  resetAllValues() {
+    this.listTarifSaisonniers = this.selectedProduct.tarifSaisonnier;
+    this.selectedPays = this.listPays.filter(p => p.item_text === this.selectedProduct.pays);
+    this.selectedType = this.listTypes.filter(p => p === this.selectedProduct.typePS);
+    this.selectedPd.refProduit = this.selectedProduct.refProduit;
+    this.selectedPd.designation = this.selectedProduct.designation;
+    this.selectedPd.descriptif = this.selectedProduct.descriptif;
+    this.selectedPd.typePS = this.selectedType;
+    this.selectedPd.pays = this.selectedPays;
+    this.selectedPd.tarifUHT = this.selectedProduct.tarifUHT;
+    this.selectedPd.maxCommande = this.selectedProduct.maxCommande;
+    this.selectedPd.minCommande = this.selectedProduct.minCommande;
+    this.getImages();
+  }
   //FileUpload
   readUrl(event: any, i) {
     if (event.target.files.length === 0)
@@ -183,60 +190,28 @@ export class EditProduitComponent implements OnInit {
 
   increment(type: string) {
     if (type === 'min') {
-      this.minCom += 1;
+      this.selectedPd.minCommande +=1; 
     } else {
-      this.maxCom += 1;
+      this.selectedPd.maxCommande +=1; 
     }
   }
 
   decrement(type: string) {
     if (type === 'min') {
-      this.minCom -= 1;
+      this.selectedPd.minCommande -=1; 
     } else {
-      this.maxCom -= 1;
+      this.selectedPd.maxCommande -=1; 
     }
   }
 
-  // getters
-  get designation() {
-    return this.productForm.get('designation'); // this.productForm.value.designation
-  }
 
-  get descriptif() {
-    return this.productForm.get('descriptif');
-  }
-
-  get typePS() {
-    return this.productForm.get('typePS');
-  }
-
-  get tarifUHT() {
-    return this.productForm.get('tarifUHT');
-  }
-
-  get minCommande() {
-    return this.productForm.get('minCommande');
-  }
-
-  get maxCommande() {
-    return this.productForm.get('maxCommande');
-  }
-
-  get pays() {
-    return this.productForm.get('pays');
-  }
-
-  get refProduit() {
-    return this.productForm.get('refProduit');
-  }
 
   // Dropdown pays
   onPaysSelect(item: any) {
-    console.log('Selected zone from event:', item);
   }
 
   onPaysDeSelect(item: any) {
-    console.log('DeSelected zone from event:', item);
+    console.log(this.selectedPd.pays);
   }
 
   get getPays() {
@@ -248,31 +223,43 @@ export class EditProduitComponent implements OnInit {
 
   // Dropdown couleur saisons
   onTypeSelect(item: any) {
-    console.log('Selected type from event:', item);
   }
 
   onTypeDeSelect(item: any) {
-    console.log('Deselected type from event:', item);
   }
 
   // Operations
-  editProduit() {
+  editProduit(productForm: NgForm) {
+    if (productForm.valid) {
+      this.toastr.success("L'opération a réussi", "👌", {
+        timeOut: 2000,
+        progressBar: true,
+        progressAnimation: 'increasing',
+        positionClass: 'toast-top-right'
+      });
+    } else {
+      this.toastr.error("Merci de bien remplir le formulaire", "🥵", {
+        timeOut: 2000,
+        progressBar: true,
+        progressAnimation: 'increasing',
+        positionClass: 'toast-top-right'
+      });
+    }
+  }
+
+  onClickShow(id: String) {
 
   }
 
-  onClickShow(id: String){
+  onClickEdit(id: String) {
 
   }
 
-  onClickEdit(id: String){
+  setTarifSaisonnierToDelete(id: String) {
 
   }
 
-  setTarifSaisonnierToDelete(id: String){
-
-  }
-
-  onClickDelete(){
+  onClickDelete() {
 
   }
 
@@ -307,17 +294,15 @@ export class EditProduitComponent implements OnInit {
     }
   }
 
-  resetForm() {
-    this.productForm.reset();
-    this.productForm.get('refProduit').setValue(this.selectedProduct.refProduit);
-    this.productForm.get('designation').setValue(this.selectedProduct.designation);
-    this.productForm.get('tarifUHT').setValue(this.selectedProduct.tarifUHT);
-    this.productForm.get('descriptif').setValue(this.selectedProduct.descriptif);
-    this.productForm.get('minCommande').setValue(this.selectedProduct.minCommande);
-    this.productForm.get('maxCommande').setValue(this.selectedProduct.maxCommande);
-    this.productForm.get('pays').setValue(this.selectedPays);
-    this.productForm.get('typePS').setValue(this.selectedType);
-    this.getImages();
+  resetForm(productForm: NgForm) {
+    this.resetAllValues();
   }
 
 }
+
+export interface DdPays {
+  item_id: number,
+  item_text: string,
+  image: string
+};
+

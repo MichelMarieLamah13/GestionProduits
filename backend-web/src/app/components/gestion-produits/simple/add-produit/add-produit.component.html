@@ -12,7 +12,11 @@
               <div class="add-product">
                 <div class="row">
                   <div class="col-xl-9 xl-50 col-sm-6 col-9">
-                    <img src="assets/images/pro3/1.jpg" alt="" class="img-fluid image_zoom_1">
+                    <!--<img src="assets/images/pro3/1.jpg" alt="" class="img-fluid image_zoom_1">-->
+                    <img  *ngIf="!url[0].img.includes('assets/')" alt="" class="img-fluid image_zoom_1" [lazyLoad]="url[0].img" 
+                    [defaultImage]="'assets/images/pro3/1.jpg'"class="img-fluid image_zoom_1">
+                    <img  *ngIf="url[0].img.includes('assets/')" alt="" class="img-fluid image_zoom_1" [lazyLoad]="'assets/images/pro3/1.jpg'" 
+                      class="img-fluid image_zoom_1">
                   </div>
                   <div class="col-xl-3 xl-50 col-sm-6 col-3">
                     <ul class="file-upload-product">
@@ -42,6 +46,9 @@
                       </div>
                       <div *ngIf="refProduit.errors?.pattern">
                         The refProduit must be a string with at least 4 characters.
+                      </div>
+                      <div *ngIf="refProduit.errors?.allowedRefProduit">
+                        Eg: SAT@2716
                       </div>
                     </div>
 
@@ -76,10 +83,6 @@
                   </div>
                   <div class="form-group row">
                     <label for="pays" class="col-xl-3 col-sm-4 mb-0">Product Pays:</label>
-                    <!--<select class="form-control digits col-xl-8 col-sm-7" id="pays" formControlName="pays">
-                      <option value="null" selected disabled>Select Pays</option>
-                      <option *ngFor="let country of countries" [ngValue]="country">{{country}}</option>
-                    </select>-->
                     <ng-multiselect-dropdown class="col-xl-8 col-sm-7 m-0 p-0" name="pays"
                       [placeholder]="'-- Select Pays --'" [settings]="dropdownPaysSettings" formControlName="pays"
                       [data]="listPays" (onSelect)="onPaysSelect($event)" (onDeSelect)="onPaysDeSelect($event)">
@@ -100,7 +103,7 @@
                         </div>
                       </ng-template>
                     </ng-multiselect-dropdown>
-                    <div *ngIf="pays.invalid && (pays.touched || pays.dirty)" class="text text-danger">
+                    <div *ngIf="pays.invalid && pays.touched" class="text text-danger">
                       <div *ngIf="pays.errors?.required">
                         The pays is required.
                       </div>
@@ -108,19 +111,14 @@
                   </div>
                   <div class="form-group row">
                     <label for="typePS" class="col-xl-3 col-sm-4 mb-0">Select Type:</label>
-                    <!--<select class="form-control digits col-xl-8 col-sm-7" id="typePS" formControlName="typePS">
-                      <option value="null" selected disabled>Select Type</option>
-                      <option *ngFor="let type of types" [ngValue]="type">{{type}}</option>
-                    </select>-->
                     <ng-multiselect-dropdown class="col-xl-8 col-sm-7 m-0 p-0" id="typePS" name="typePS" [data]="types"
-                      formControlName="typePS" [settings]="dropdownTypesSettings"
-                      (onSelect)="onTypeSelect($event)" (onDeSelect)="onTypeDeSelect($event)"
-                      [placeholder]="'-- Select Type --'">
+                      formControlName="typePS" [settings]="dropdownTypesSettings" (onSelect)="onTypeSelect($event)"
+                      (onDeSelect)="onTypeDeSelect($event)" [placeholder]="'-- Select Type --'">
                     </ng-multiselect-dropdown>
                     <div *ngIf="typePS.invalid && typePS.touched" class="text text-danger">
 
                       <div *ngIf="typePS.errors?.required">
-                        The Couleur Saison is required.
+                        The Type is required.
                       </div>
                     </div>
                   </div>
@@ -129,9 +127,22 @@
                     <div class="qty-box1">
                       <div class="input-group">
                         <i class="fa fa-minus btnGtr1" (click)="decrement('min')"></i>
-                        <input class="touchspin1 text-center" name="minCom"  type="text"
-                          formControlName="minCommande">
+                        <input class="touchspin1 text-center" name="minCom" type="text" formControlName="minCommande"
+                          required>
                         <i class="fa fa-plus btnLess1" (click)="increment('min')"></i>
+                      </div>
+                    </div>
+                    <div *ngIf="productForm.errors?.invalidValue && (minCommande.touched || minCommande.dirty)"
+                      class="text text-danger">
+                      The min commande must be less than the max commande.
+                    </div>
+                    <div *ngIf="minCommande.invalid && minCommande.touched" class="text text-danger">
+                      <div *ngIf="minCommande.errors?.pattern">
+                        The min commande is required.
+                      </div>
+
+                      <div *ngIf="minCommande.errors?.pattern">
+                        The min commande must be great than 0.
                       </div>
                     </div>
                   </div>
@@ -140,9 +151,21 @@
                     <div class="qty-box1">
                       <div class="input-group">
                         <i class="fa fa-minus btnGtr1" (click)="decrement('max')"></i>
-                        <input class="touchspin1 text-center" name="maxCom"  type="text"
-                          formControlName="maxCommande">
+                        <input class="touchspin1 text-center" name="maxCom" type="text" formControlName="maxCommande"
+                          required>
                         <i class="fa fa-plus btnLess1" (click)="increment('max')"></i>
+                      </div>
+                    </div>
+                    <div *ngIf="productForm.errors?.invalidValue && (maxCommande.touched || maxCommande.dirty)"
+                      class="text text-danger">
+                      The max commande must be great than the min commande.
+                    </div>
+                    <div *ngIf="maxCommande.invalid && maxCommande.touched" class="text text-danger">
+                      <div *ngIf="minCommande.errors?.pattern">
+                        The max commande is required.
+                      </div>
+                      <div *ngIf="maxCommande.errors?.pattern">
+                        The max commande must be great than 0.
                       </div>
                     </div>
                   </div>
@@ -159,8 +182,8 @@
               </form>
               <div class="form-group row mb-0">
                 <div class="product-buttons col-sm-8 offset-xl-3 offset-sm-4">
-                  <button type="button" class="btn btn-primary mr-1" (click)="addProduit()">Add</button>
-                  <button type="button" class="btn btn-light" (click)="resetForm()">Discard</button>
+                  <button type="button" class="btn btn-primary mr-1" (click)="addProduit()" [disabled]="productForm.invalid">Add</button>
+                  <button type="button" class="btn btn-light" (click)="resetForm()" [disabled]="!productForm.touched">Discard</button>
                 </div>
               </div>
             </div>
